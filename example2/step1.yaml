@@ -8,7 +8,7 @@
   tasks:
      - name: Install the OS packages
        ansible.builtin.apt:
-         name: 
+         name:
            - python-setuptools
            - nginx
            - git
@@ -107,12 +107,18 @@
          daemon_reload: yes
          name: nginx
 
-#     - action: uri url=http://127.0.0.1:80 return_content=yes
-#       delegate_to: localhost
-#       register: result
-#       until: "'failed' not in result and result.content.find('OK') != -1"
-#       retries: 18
-#       delay: 10
+     - name: Checking service status
+       ansible.builtin.uri:
+         url: http://127.0.0.1:80
+         method: GET
+         status_code: [200, 202]
+         return_content: true
+         headers:
+           Host: uuid.org
+       register: result
+       until: "'failed' != false and result.content.find('uuid') != -1"
+       retries: 18
+       delay: 10
 
   handlers:
    - name: Restart Nginx
