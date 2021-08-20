@@ -3,15 +3,12 @@
   gather_facts: true
   hosts: site-lb
   serial: 10
-  remote_user: unixway
-  become: yes
-  become_user: root
-  become_method: su
+  remote_user: root
 
   tasks:
      - name: Install the OS packages
        ansible.builtin.apt:
-         name: 
+         name:
            - haproxy
          state: present
          update_cache: yes
@@ -38,4 +35,3 @@
      ansible.builtin.service:
        name: haproxy
        state: restarted
-

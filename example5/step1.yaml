@@ -3,24 +3,20 @@
   gather_facts: true
   hosts: all
   serial: 10
-  remote_user: unixway
-  become: yes
-  become_user: root
-  become_method: su
+  remote_user: root
 
   tasks:
      - name: Install the OS packages in Debian
        ansible.builtin.apt:
-         name: 
+         name:
            - vim
          state: present
          update_cache: yes
        when: ansible_facts['os_family'] == "Debian"
 
      - name: Install the OS packages in CentOS
-       ansible.builtin.apt:
-         name: 
+       ansible.builtin.yum:
+         name:
            - vim
          state: present
-         update_cache: yes
        when: ansible_facts['os_family'] == "CentOS"
