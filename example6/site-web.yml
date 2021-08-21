@@ -1,0 +1,16 @@
+
+- name: Playbook for Web Services initialization
+  gather_facts: true
+  hosts: site-web
+  serial: 10
+  remote_user: root
+
+  tasks:
+    - include_role:
+         name: common-role
+      when: ansible_facts['os_family'] == "Debian"
+
+    - include_role:
+         name: site-web-role
+      vars:
+        server_name: "uuid.org *.uuid.org"

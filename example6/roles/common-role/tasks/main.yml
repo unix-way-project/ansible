@@ -1,0 +1,6 @@
+ - name: Install common OS packages
+   ansible.builtin.apt:
+     name:
+       - vim
+     state: present
+     update_cache: yes

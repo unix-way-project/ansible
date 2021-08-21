@@ -1,0 +1,24 @@
+ - name: Add nginx an access to uwsgi socket
+   ansible.builtin.user:
+     name: www-data
+     groups: uuid
+     append: yes
+   notify:
+     - Restart Nginx
+
+ - name: Copy nginx configuration for UUID service
+   ansible.builtin.template:
+     src: nginx.conf
+     dest: /etc/nginx/conf.d/uuid.conf
+     owner: root
+     group: root
+     mode: u+rw,g=rw,o=
+   notify:
+     - Restart Nginx
+
+ - name: Start nginx service
+   ansible.builtin.systemd:
+     state: started
+     enabled: yes
+     daemon_reload: yes
+     name: nginx

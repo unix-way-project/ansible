@@ -1,0 +1,3 @@
+---
+# vars file for site-web-role
+server_name: "localhost"

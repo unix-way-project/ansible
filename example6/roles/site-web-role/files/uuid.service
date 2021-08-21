@@ -1,0 +1,20 @@
+[Unit]
+Description=UUID Service
+Requires=
+After=nginx.service
+Wants=
+
+[Service]
+User=uuid
+WorkingDirectory=/home/uuid/uuid-service/
+
+PermissionsStartOnly=true
+ExecStartPre=/usr/bin/mkdir -p /var/run/uuid
+ExecStartPre=/usr/bin/chown -R uuid:uuid /var/run/uuid
+
+ExecStart=/usr/local/bin/uwsgi /home/uuid/uwsgi.ini
+ExecStop=/bin/kill -SIGINT $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,33 @@
+ - name: Install Python packages for running UUID project
+   ansible.builtin.pip:
+     name:
+       - uwsgi
+     state: present
+     executable: pip3
+
+ - name: Copy uwsgi configuration
+   ansible.builtin.copy:
+     src: uwsgi.ini
+     dest: /home/uuid/uwsgi.ini
+     owner: uuid
+     group: uuid
+     mode: u+rw,g=rw,o=
+   notify:
+     - Restart UUID
+
+ - name: Copy systemd service for UUID service
+   ansible.builtin.copy:
+     src: uuid.service
+     dest: /usr/lib/systemd/system
+     owner: root
+     group: root
+     mode: u+rw,g=rw,o=
+   notify:
+     - Restart UUID
+
+ - name: Start UUID service
+   ansible.builtin.systemd:
+     state: started
+     enabled: yes
+     daemon_reload: yes
+     name: uuid

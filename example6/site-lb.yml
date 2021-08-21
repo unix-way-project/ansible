@@ -1,0 +1,14 @@
+
+- name: Playbook for Web Services Load Balancer initialization
+  gather_facts: true
+  hosts: site-lb
+  serial: 10
+  remote_user: root
+
+  tasks:
+    - include_role:
+         name: common-role
+      when: ansible_facts['os_family'] == "Debian"
+
+    - include_role:
+         name: site-lb-role

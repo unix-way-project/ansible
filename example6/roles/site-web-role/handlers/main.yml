@@ -1,0 +1,9 @@
+ - name: Restart Nginx
+   ansible.builtin.service:
+     name: nginx
+     state: restarted
+
+ - name: Restart UUID
+   ansible.builtin.service:
+     name: uuid
+     state: restarted

@@ -1,0 +1,30 @@
+ - name: Add user for UUID service
+   ansible.builtin.user:
+     name: uuid
+     shell: /bin/bash
+     create_home: true
+
+ - name: Clone UUID repository
+   ansible.builtin.git:
+     repo: https://github.com/unix-way-project/uuid-service.git
+     dest: /home/uuid/uuid-service
+     version: main
+     update: false
+   notify:
+     - Restart UUID
+
+ - name: Set permissions on UUID project
+   ansible.builtin.file:
+     path: /home/uuid/uuid-service
+     state: directory
+     recurse: yes
+     owner: uuid
+     group: uuid
+
+ - name: Install Python packages for UUID project
+   ansible.builtin.pip:
+     requirements: /home/uuid/uuid-service/sources/requirements.txt
+     state: present
+     executable: pip3
+   notify:
+     - Restart UUID

@@ -1,0 +1,13 @@
+
+- name: Checking service status
+  ansible.builtin.uri:
+    url: http://127.0.0.1:80
+    method: GET
+    status_code: [200, 202]
+    return_content: true
+    headers:
+      Host: uuid.org
+  register: result
+  until: "'failed' != false and result.content.find('uuid') != -1"
+  retries: 18
+  delay: 10
