@@ -6,6 +6,9 @@
   remote_user: root
 
   tasks:
+    - name: Checking ICMP is working
+      ansible.builtin.ping:
+
     - include_role:
          name: common-role
       when: ansible_facts['os_family'] == "Debian"
