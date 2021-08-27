@@ -1,0 +1,66 @@
+
+- include_role:
+     name: community.mongodb.mongodb_repository
+  when: inventory_hostname in groups['cfg']
+
+- include_role:
+     name: community.mongodb.mongodb_config
+  vars:
+     config_repl_set_name: "cfg"
+  when: inventory_hostname in groups['cfg']
+
+- name: Install the OS packages
+  ansible.builtin.apt:
+    name:
+      - python-setuptools
+      - python3
+      - python3-pip
+      - mongodb-org-shell
+    state: present
+    update_cache: yes
+  when: inventory_hostname == groups['cfg'][0]
+
+- name: Install pymongo as dependency for some modules
+  ansible.builtin.pip:
+    name:
+      - pymongo
+    state: present
+    executable: pip3
+  when: inventory_hostname == groups['cfg'][0]
+
+- name: Initialise MongoDB Config Replicaset cfg
+  community.mongodb.mongodb_replicaset:
+    login_database: "admin"
+    login_host: localhost
+    login_port: "27019"
+    replica_set: "cfg"
+    members:
+      - "server1.unixway.org:27019"
+      - "server2.unixway.org:27019"
+      - "server3.unixway.org:27019"
+  when: inventory_hostname == groups['cfg'][0]
+  register: config_status
+
+- name: Printing status
+  ansible.builtin.debug:
+    var: config_status
+  when: inventory_hostname == groups['cfg'][0]
+
+- name: Ensure replicaset has reached a converged state
+  community.mongodb.mongodb_status:
+    replica_set: "cfg"
+    login_database: "admin"
+    login_host: localhost
+    login_port: "27019"
+    poll: 10
+    interval: 10
+  when: config_status.changed == True
+
+- name: Import mongodb_auth role
+  include_role:
+    name: community.mongodb.mongodb_auth
+  vars:
+    mongod_host: "localhost"
+    mongod_port: "27019"
+    mongodb_admin_pwd: "adminpwd"
+  when: inventory_hostname == groups['cfg'][0]

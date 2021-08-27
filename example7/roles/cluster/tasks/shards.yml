@@ -1,0 +1,10 @@
+
+- name: Add a replicaset shard named rs1 with a member running on port 27018 on mongodb0.example.net
+  community.mongodb.mongodb_shard:
+    login_host: localhost
+    login_port: "27018" # mongos port
+    login_user: admin
+    login_password: adminpwd
+    shard: "rs0/server4.unixway.org:27017,server5.unixway.org:27017,server6.unixway.org:27017"
+    state: present
+  when: inventory_hostname == groups['cfg'][0]

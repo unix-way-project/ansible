@@ -1,0 +1,15 @@
+
+- name: Initialize config replicaset
+  include_tasks: "config.yml"
+
+- name: Initialize rs0 replicaset
+  include_tasks: "rs0.yml"
+
+- include_role:
+     name: community.mongodb.mongodb_mongos
+  vars:
+    mongos_port: "27018"
+    config_servers: "server1.unixway.org:27019,server2.unixway.org:27019,server3.unixway.org:27019"
+
+- name: Initialize shards
+  include_tasks: "shards.yml"

@@ -1,0 +1,73 @@
+
+- name: Playbook for Web Services initialization
+  gather_facts: true
+  hosts: all
+  serial: 10
+  remote_user: root
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+
+  tasks:
+    - include_role:
+         name: cluster
+
+
+
+#
+#   tasks:
+#     # - name: Update the /etc/hosts file with node name
+#     #   lineinfile:
+#     #     path: "/etc/hosts"
+#     #     regexp: ".*\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
+#     #     line: "{{ hostvars[item]['ansible_env'].SSH_CONNECTION.split(' ')[2] }}\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
+#     #     state: present
+#     #     backup: yes
+#     #   register: etchostsupdate
+#     #   when: ansible_hostname != "{{ item }}" or ansible_hostname == "{{ item }}"
+#     #   with_items: "{{groups['all']}}"
+#
+#     - include_role:
+#          name: community.mongodb.mongodb_repository
+#
+#     - include_role:
+#          name: community.mongodb.mongodb_config
+#       vars:
+#          config_repl_set_name: "cfg"
+#
+#     # - include_role:
+#     #      name: community.mongodb.mongodb_mongos
+#     #   vars:
+#     #     config_servers: "server1.unixway.org:27019,server2.unixway.org:27019,server3.unixway.org:27019"
+#     #
+#     - name: Install the OS packages
+#       ansible.builtin.apt:
+#         name:
+#           - python-setuptools
+#           - python3
+#           - python3-pip
+#           - mongodb-org-shell
+#         state: present
+#         update_cache: yes
+#       when: ansible_hostname == "server1"
+#
+#     - name: Install pymongo as dependency for some modules
+#       ansible.builtin.pip:
+#         name:
+#           - pymongo
+#         state: present
+#         executable: pip3
+#       when: ansible_hostname == "server1"
+#
+#     - name: Initialise MongoDB Replicaset rs0
+#       community.mongodb.mongodb_replicaset:
+#         login_database: "admin"
+#         login_host: localhost
+#         login_port: "27019"
+#         replica_set: "cfg"
+#         members:
+#           - "server1.unixway.org:27019"
+#           - "server2.unixway.org:27019"
+#           - "server3.unixway.org:27019"
+#       when: ansible_hostname == "server1"
+#       register: repl
