@@ -40,8 +40,8 @@
     replica_set: "{{ replica_set }}"
     login_database: "admin"
     login_host: localhost
-    login_port: "27018"
-    members: "{{ groups[replica_set] | zip_longest([], fillvalue=':27018')| map('join') }}"
+    login_port: "{{ mongod_data_port }}"
+    members: "{{ groups[replica_set] | zip_longest([], fillvalue=':'+mongod_data_port)| map('join') }}"
   when: inventory_hostname == groups[replica_set][0]
   register: config_status
 
@@ -55,7 +55,7 @@
     replica_set: "{{ replica_set }}"
     login_database: "admin"
     login_host: localhost
-    login_port: "27018"
+    login_port: "{{ mongod_data_port }}"
     poll: 10
     interval: 10
   when:

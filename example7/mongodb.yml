@@ -18,7 +18,7 @@
       include_role:
          name: lb
       vars:
-        mongo_frontend_port: 11111
+        lb_mongo_frontend_port: 11111
 
       # http://server6.unixway.org:9000/haproxy_stats
       # mongo --host 192.168.122.106 --port 11111 --username admin

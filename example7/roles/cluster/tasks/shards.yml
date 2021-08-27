@@ -4,15 +4,15 @@
   include_role:
      name: community.mongodb.mongodb_mongos
   vars:
-    mongos_port: "27017"
-    config_servers: "{{ groups['cfg'] | zip_longest([], fillvalue=':27019')| map('join') | join(',') }}"
+    mongos_port: "{{ mongos_service_port }}"
+    config_servers: "{{ groups['cfg'] | zip_longest([], fillvalue=':'+mongod_config_port)| map('join') | join(',') }}"
   when: inventory_hostname in groups['mongos']
 
 # Example - shard: "rs0/server4.unixway.org:27018,server5.unixway.org:27018,server6.unixway.org:27018"
 - name: "Initialize replicasets shards"
   community.mongodb.mongodb_shard:
     login_host: localhost
-    login_port: "27017" # mongos port
+    login_port: "{{ mongos_service_port }}"
     login_user: admin
     login_password: adminpwd
     shard: "{{ replica_set }}/{{ groups[replica_set] | zip_longest([], fillvalue=':27018')| map('join') | join(',') }}"

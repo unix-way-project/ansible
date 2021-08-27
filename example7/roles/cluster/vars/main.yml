@@ -2,6 +2,6 @@
 replica_sets: []
 
 # https://docs.mongodb.com/manual/reference/default-mongodb-port/
-mongos_port: 27017
-mongod_data_port: 27018
-mongod_config_port: 27019
+mongos_service_port: "27017"
+mongod_data_port: "27018"
+mongod_config_port: "27019"
