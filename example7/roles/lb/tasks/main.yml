@@ -1,0 +1,3 @@
+- name: Initialize load balancer
+  include_tasks: "haproxy.yml"
+  when: inventory_hostname in groups['lb']

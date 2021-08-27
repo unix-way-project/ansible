@@ -7,67 +7,18 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
 
-
   tasks:
-    - include_role:
+    - name: "Install Mongodb cluster"
+      include_role:
          name: cluster
+      vars:
+        replica_sets: "{{ groups.keys() | select('match', '^rs\\d+') | list }}"
 
+    - name: "Install Mongodb load balancer"
+      include_role:
+         name: lb
+      vars:
+        mongo_frontend_port: 11111
 
-
-#
-#   tasks:
-#     # - name: Update the /etc/hosts file with node name
-#     #   lineinfile:
-#     #     path: "/etc/hosts"
-#     #     regexp: ".*\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
-#     #     line: "{{ hostvars[item]['ansible_env'].SSH_CONNECTION.split(' ')[2] }}\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
-#     #     state: present
-#     #     backup: yes
-#     #   register: etchostsupdate
-#     #   when: ansible_hostname != "{{ item }}" or ansible_hostname == "{{ item }}"
-#     #   with_items: "{{groups['all']}}"
-#
-#     - include_role:
-#          name: community.mongodb.mongodb_repository
-#
-#     - include_role:
-#          name: community.mongodb.mongodb_config
-#       vars:
-#          config_repl_set_name: "cfg"
-#
-#     # - include_role:
-#     #      name: community.mongodb.mongodb_mongos
-#     #   vars:
-#     #     config_servers: "server1.unixway.org:27019,server2.unixway.org:27019,server3.unixway.org:27019"
-#     #
-#     - name: Install the OS packages
-#       ansible.builtin.apt:
-#         name:
-#           - python-setuptools
-#           - python3
-#           - python3-pip
-#           - mongodb-org-shell
-#         state: present
-#         update_cache: yes
-#       when: ansible_hostname == "server1"
-#
-#     - name: Install pymongo as dependency for some modules
-#       ansible.builtin.pip:
-#         name:
-#           - pymongo
-#         state: present
-#         executable: pip3
-#       when: ansible_hostname == "server1"
-#
-#     - name: Initialise MongoDB Replicaset rs0
-#       community.mongodb.mongodb_replicaset:
-#         login_database: "admin"
-#         login_host: localhost
-#         login_port: "27019"
-#         replica_set: "cfg"
-#         members:
-#           - "server1.unixway.org:27019"
-#           - "server2.unixway.org:27019"
-#           - "server3.unixway.org:27019"
-#       when: ansible_hostname == "server1"
-#       register: repl
+      # http://server6.unixway.org:9000/haproxy_stats
+      # mongo --host 192.168.122.106 --port 11111 --username admin

@@ -6,9 +6,10 @@
 
 - name: "Install mongodb packages for replicaset {{ replica_set }}"
   include_role:
-     name: community.mongodb.mongodb_config
+     name: community.mongodb.mongodb_mongod
   vars:
-     config_repl_set_name: "{{ replica_set }}"
+     sharding: true
+     mongod_port: 27018
   when: inventory_hostname in groups[replica_set]
 
 - name: "Initialize control server for replicaset {{ replica_set }}"
@@ -31,16 +32,16 @@
   when: inventory_hostname == groups[replica_set][0]
 
 # Members example: a list
-# - "server1.unixway.org:27019"
-# - "server2.unixway.org:27019"
-# - "server3.unixway.org:27019"
-- name: "Initialise MongoDB Config replicaset {{ replica_set }}"
+# - "server4.unixway.org:27018"
+# - "server5.unixway.org:27018"
+# - "server6.unixway.org:27018"
+- name: "Initialize MongoDB replicaset {{ replica_set }}"
   community.mongodb.mongodb_replicaset:
     replica_set: "{{ replica_set }}"
     login_database: "admin"
     login_host: localhost
-    login_port: "27019"
-    members: "{{ groups[replica_set] | zip_longest([], fillvalue=':27019')| map('join') }}"
+    login_port: "27018"
+    members: "{{ groups[replica_set] | zip_longest([], fillvalue=':27018')| map('join') }}"
   when: inventory_hostname == groups[replica_set][0]
   register: config_status
 
@@ -54,16 +55,9 @@
     replica_set: "{{ replica_set }}"
     login_database: "admin"
     login_host: localhost
-    login_port: "27019"
+    login_port: "27018"
     poll: 10
     interval: 10
-  when: config_status.changed == True
-
-- name: "Set mongodb administrator role for entire cluster"
-  include_role:
-    name: community.mongodb.mongodb_auth
-  vars:
-    mongod_host: "localhost"
-    mongod_port: "27019"
-    mongodb_admin_pwd: "adminpwd"
-  when: inventory_hostname == groups[replica_set][0]
+  when:
+    - config_status.changed == True
+    - inventory_hostname == groups[replica_set][0]

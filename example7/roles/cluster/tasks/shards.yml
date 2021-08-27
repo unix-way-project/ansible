@@ -1,10 +1,23 @@
 
-- name: Add a replicaset shard named rs1 with a member running on port 27018 on mongodb0.example.net
+# Example - config_servers:  "server1.unixway.org:27019,server2.unixway.org:27019,server3.unixway.org:27019"
+- name: "Install mongos proxy on all servers"
+  include_role:
+     name: community.mongodb.mongodb_mongos
+  vars:
+    mongos_port: "27017"
+    config_servers: "{{ groups['cfg'] | zip_longest([], fillvalue=':27019')| map('join') | join(',') }}"
+  when: inventory_hostname in groups['mongos']
+
+# Example - shard: "rs0/server4.unixway.org:27018,server5.unixway.org:27018,server6.unixway.org:27018"
+- name: "Initialize replicasets shards"
   community.mongodb.mongodb_shard:
     login_host: localhost
-    login_port: "27018" # mongos port
+    login_port: "27017" # mongos port
     login_user: admin
     login_password: adminpwd
-    shard: "rs0/server4.unixway.org:27017,server5.unixway.org:27017,server6.unixway.org:27017"
+    shard: "{{ replica_set }}/{{ groups[replica_set] | zip_longest([], fillvalue=':27018')| map('join') | join(',') }}"
     state: present
+  vars:
+    replica_set: "{{ item }}"
+  loop: "{{ replica_sets }}"
   when: inventory_hostname == groups['cfg'][0]

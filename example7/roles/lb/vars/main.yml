@@ -1,0 +1,5 @@
+---
+# vars file for site-web-role
+
+mongo_frontend_port: 27017
+mongo_backend_port: 27017

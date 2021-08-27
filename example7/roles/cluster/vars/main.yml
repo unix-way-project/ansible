@@ -1,2 +1,2 @@
 ---
-# vars file for site-web-role
+replica_sets: []

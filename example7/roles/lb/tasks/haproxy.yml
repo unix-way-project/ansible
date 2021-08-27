@@ -1,0 +1,24 @@
+
+- name: Install the OS packages
+  ansible.builtin.apt:
+    name:
+      - haproxy
+    state: present
+    update_cache: yes
+
+- name: Copy haproxy configuration for Load Balancer service
+  ansible.builtin.template:
+    src: haproxy.cfg
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: u+rw,g=rw,o=r
+  notify:
+    - Restart Haproxy
+
+- name: Start haproxy service
+  ansible.builtin.systemd:
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    name: haproxy
