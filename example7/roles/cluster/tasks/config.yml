@@ -1,4 +1,9 @@
 
+- name: "Initialize advised operation system configs for replicaset {{ replica_set }}"
+  include_role:
+     name: community.mongodb.mongodb_linux
+  when: inventory_hostname in groups[replica_set]
+
 - name: "Initialize mongodb repository for replicaset {{ replica_set }}"
   include_role:
      name: community.mongodb.mongodb_repository
@@ -65,5 +70,5 @@
   vars:
     mongod_host: "localhost"
     mongod_port: "{{ mongod_config_port }}"
-    mongodb_admin_pwd: "adminpwd"
+    mongodb_admin_pwd: "{{ mongo_admin_password }}"
   when: inventory_hostname == groups[replica_set][0]

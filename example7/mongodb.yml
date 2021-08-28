@@ -1,5 +1,5 @@
 
-- name: Playbook for Web Services initialization
+- name: Playbook for MongoDB infrastructure initialization
   gather_facts: true
   hosts: all
   serial: 10
@@ -13,6 +13,7 @@
          name: cluster
       vars:
         replica_sets: "{{ groups.keys() | select('match', '^rs\\d+') | list }}"
+        mongo_admin_password: "{{ lookup('env', 'MONGO_ADMIN_PASSWORD') }}"
 
     - name: "Install Mongodb load balancer"
       include_role:

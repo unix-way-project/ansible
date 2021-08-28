@@ -14,8 +14,8 @@
     login_host: localhost
     login_port: "{{ mongos_service_port }}"
     login_user: admin
-    login_password: adminpwd
-    shard: "{{ replica_set }}/{{ groups[replica_set] | zip_longest([], fillvalue=':27018')| map('join') | join(',') }}"
+    login_password: "{{ mongo_admin_password }}"
+    shard: "{{ replica_set }}/{{ groups[replica_set] | zip_longest([], fillvalue=':'+mongod_data_port)| map('join') | join(',') }}"
     state: present
   vars:
     replica_set: "{{ item }}"

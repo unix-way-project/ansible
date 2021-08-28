@@ -5,3 +5,5 @@ replica_sets: []
 mongos_service_port: "27017"
 mongod_data_port: "27018"
 mongod_config_port: "27019"
+
+mongo_admin_password: "admin"

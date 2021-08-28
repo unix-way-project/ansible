@@ -1,4 +1,9 @@
 
+- name: "Initialize advised operation system configs for replicaset {{ replica_set }}"
+  include_role:
+     name: community.mongodb.mongodb_linux
+  when: inventory_hostname in groups[replica_set]
+
 - name: "Initialize mongodb repository for replicaset {{ replica_set }}"
   include_role:
      name: community.mongodb.mongodb_repository
