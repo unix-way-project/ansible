@@ -21,7 +21,7 @@ module "rs_cfg" {
 }
 
 module "rs_data" {
-  for_each = toset(formatlist("rs%d", range(2)))
+  for_each = toset(formatlist("rs%d", range(var.replica_sets_data_total)))
 
   source = "./replicaset"
 

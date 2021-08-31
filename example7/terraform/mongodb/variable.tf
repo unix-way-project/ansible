@@ -23,6 +23,10 @@ variable "replica_set_cfg_count" {
   type = number
 }
 
+variable "replica_sets_data_total" {
+  type = number
+}
+
 variable "replica_set_data_size" {
   type = string
 }

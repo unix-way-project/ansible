@@ -2,6 +2,7 @@
 # https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs
 
 # List all images: curl -X GET --silent "https://api.digitalocean.com/v2/images?per_page=999" -H "Authorization: Bearer $DO_API_TOKEN"
+# List all sizes: curl -X GET --silent "https://api.digitalocean.com/v2/sizes?per_page=999" -H "Authorization: Bearer $DO_API_TOKEN"
 
 terraform {
   required_providers {
@@ -17,7 +18,7 @@ provider "digitalocean" {
 }
 
 data "digitalocean_ssh_key" "unixway_keypair" {
-  name = "unixway-keypair"
+  name = var.do_ssh_key
 }
 
 resource "digitalocean_vpc" "unixway_vpc" {
@@ -37,6 +38,7 @@ module "unixway_mongodb" {
   replica_set_cfg_count = 3
   replica_set_cfg_size = "s-1vcpu-1gb"
 
+  replica_sets_data_total = 1
   replica_set_data_size = "s-1vcpu-1gb"
   replica_set_data_count = 3
 }
