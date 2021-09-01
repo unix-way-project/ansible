@@ -5,7 +5,7 @@
      name: community.mongodb.mongodb_mongos
   vars:
     mongos_port: "{{ mongos_service_port }}"
-    config_servers: "{{ groups['cfg'] | zip_longest([], fillvalue=':'+mongod_config_port)| map('join') | join(',') }}"
+    config_servers: "{{ groups['cfg'] | map('extract', hostvars, ['ansible_eth1', 'ipv4', 'address']) | zip_longest([], fillvalue=':'+mongod_config_port)| map('join') | join(',') }}"
   when: inventory_hostname in groups['mongos']
 
 # Example - shard: "rs0/server4.unixway.org:27018,server5.unixway.org:27018,server6.unixway.org:27018"
@@ -15,7 +15,7 @@
     login_port: "{{ mongos_service_port }}"
     login_user: admin
     login_password: "{{ mongo_admin_password }}"
-    shard: "{{ replica_set }}/{{ groups[replica_set] | zip_longest([], fillvalue=':'+mongod_data_port)| map('join') | join(',') }}"
+    shard: "{{ replica_set }}/{{ groups[replica_set] | map('extract', hostvars, ['ansible_eth1', 'ipv4', 'address']) | zip_longest([], fillvalue=':'+mongod_data_port)| map('join') | join(',') }}"
     state: present
   vars:
     replica_set: "{{ item }}"

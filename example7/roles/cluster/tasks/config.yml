@@ -45,7 +45,7 @@
     login_database: "admin"
     login_host: localhost
     login_port: "{{ mongod_config_port }}"
-    members: "{{ groups[replica_set] | zip_longest([], fillvalue=':'+mongod_config_port)| map('join') }}"
+    members: "{{ groups[replica_set] | map('extract', hostvars, ['ansible_eth1', 'ipv4', 'address']) | zip_longest([], fillvalue=':'+mongod_config_port)| map('join') }}"
   when: inventory_hostname == groups[replica_set][0]
   register: config_status
 

@@ -1,5 +1,11 @@
 ---
-# vars file for site-web-role
 
+# Frontend port used by Load Balancer to access MongoDB Cluster
 lb_mongo_frontend_port: 27017
+
+# Backend port where mongos service is installed on relevant mongodb nodes
 lb_mongo_backend_port: 27017
+
+# All communication between mongodb nodes should use
+# internal interface on the nodes and not using public internet facing routes
+private_interface: 'eth0'

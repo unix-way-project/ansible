@@ -38,7 +38,7 @@ module "unixway_mongodb" {
   replica_set_cfg_count = 3
   replica_set_cfg_size = "s-1vcpu-1gb"
 
-  replica_sets_data_total = 1
+  replica_sets_data_total = 2
   replica_set_data_size = "s-1vcpu-1gb"
   replica_set_data_count = 3
 }

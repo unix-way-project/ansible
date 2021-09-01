@@ -14,12 +14,14 @@
       vars:
         replica_sets: "{{ groups.keys() | select('match', '^rs\\d+') | list }}"
         mongo_admin_password: "{{ lookup('env', 'MONGO_ADMIN_PASSWORD') }}"
+        private_interface: 'eth1'
 
     - name: "Install Mongodb load balancer"
       include_role:
          name: lb
       vars:
         lb_mongo_frontend_port: 11111
+        private_interface: 'eth1'
 
       # http://server6.unixway.org:9000/haproxy_stats
       # mongo --host 192.168.122.106 --port 11111 --username admin

@@ -13,6 +13,7 @@
   include_role:
      name: community.mongodb.mongodb_mongod
   vars:
+     repl_set_name: "{{ replica_set }}"
      sharding: true
      mongod_port: 27018
   when: inventory_hostname in groups[replica_set]
@@ -46,7 +47,7 @@
     login_database: "admin"
     login_host: localhost
     login_port: "{{ mongod_data_port }}"
-    members: "{{ groups[replica_set] | zip_longest([], fillvalue=':'+mongod_data_port)| map('join') }}"
+    members: "{{ groups[replica_set] | map('extract', hostvars, ['ansible_eth1', 'ipv4', 'address']) | zip_longest([], fillvalue=':'+mongod_data_port)| map('join') }}"
   when: inventory_hostname == groups[replica_set][0]
   register: config_status
 
